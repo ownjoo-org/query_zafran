@@ -72,7 +72,7 @@ python qz.py --api-key TOKEN --domain https://api.example.com --mode assets
 # Fetch a sample of 50 assets matching a ZQL filter, output as CSV
 python qz.py --api-key TOKEN --domain https://api.example.com \
   --mode assets \
-  --assets-zql "is_internet_facing = true" \
+  --assets-zql "is_internet_facing:true" \
   --limit 50 \
   --output csv
 ```
@@ -106,7 +106,7 @@ python qz.py --api-key TOKEN --domain https://api.example.com \
 # Join assets and findings — one record per asset with a nested findings list
 python qz.py --api-key TOKEN --domain https://api.example.com \
   --mode join \
-  --assets-zql "is_internet_facing = true" \
+  --assets-zql "is_internet_facing:true" \
   --store-path ./zafran.db
 ```
 
