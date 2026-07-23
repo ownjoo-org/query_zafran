@@ -34,6 +34,13 @@ if __name__ == '__main__':
         help='Base URL for the API (e.g. https://api.example.com) (required for all modes except query)',
     )
     parser.add_argument(
+        '--proxy',
+        type=str,
+        required=False,
+        default=None,
+        help='HTTP proxy URL to route API requests through (e.g. http://proxy.example.com:8080)',
+    )
+    parser.add_argument(
         '--mode',
         type=str,
         required=False,
@@ -152,7 +159,7 @@ if __name__ == '__main__':
 
     try:
         if args.mode == 'assets':
-            client = ZafranClient(api_key=args.api_key, domain=args.domain)
+            client = ZafranClient(api_key=args.api_key, domain=args.domain, proxy=args.proxy)
             for record in client.list_assets(
                 query=args.asset_query,
                 page_size=args.page_size,
@@ -161,7 +168,7 @@ if __name__ == '__main__':
                 formatter.write(record)
 
         elif args.mode == 'findings':
-            client = ZafranClient(api_key=args.api_key, domain=args.domain)
+            client = ZafranClient(api_key=args.api_key, domain=args.domain, proxy=args.proxy)
             for record in client.list_findings(
                 query=args.finding_query,
                 page_size=args.page_size,
@@ -170,7 +177,7 @@ if __name__ == '__main__':
                 formatter.write(record)
 
         elif args.mode == 'join':
-            client = ZafranClient(api_key=args.api_key, domain=args.domain)
+            client = ZafranClient(api_key=args.api_key, domain=args.domain, proxy=args.proxy)
             store = Store(path=args.store_path)
             logger.info(f'Loading assets into store ({args.store_path})...')
             for asset in client.list_assets(

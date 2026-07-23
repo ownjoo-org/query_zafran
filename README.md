@@ -41,6 +41,7 @@ pip install -r requirements.txt
 ```
 --api-key       Bearer token (required for assets, findings, join)
 --domain        API base URL, e.g. https://api.example.com (required for assets, findings, join)
+--proxy         HTTP proxy URL to route API requests through, e.g. http://proxy.example.com:8080
 --mode          assets | findings | join | query  (default: assets)
 --assets-zql    ZQL filter for assets
 --findings-zql  ZQL filter for findings

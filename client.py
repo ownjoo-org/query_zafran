@@ -11,9 +11,9 @@ logger = logging.getLogger(__name__)
 
 
 class ZafranClient:
-    def __init__(self, api_key: str, domain: str):
+    def __init__(self, api_key: str, domain: str, proxy: Optional[str] = None):
         self.domain = domain
-        self._session = Client(follow_redirects=True, http2=True)
+        self._session = Client(follow_redirects=True, http2=True, proxy=proxy)
         self._session.headers.update(
             {
                 'Accept': 'application/json',
