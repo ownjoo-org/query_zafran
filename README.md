@@ -42,8 +42,8 @@ pip install -r requirements.txt
 --api-key       Bearer token (required for assets, findings, join)
 --domain        API base URL, e.g. https://api.example.com (required for assets, findings, join)
 --mode          assets | findings | join | query  (default: assets)
---asset-query   ZQL filter for assets
---finding-query ZQL filter for findings
+--assets-zql    ZQL filter for assets
+--findings-zql  ZQL filter for findings
 --page-size     Results per API page (default: 100)
 --limit         Max records to fetch per endpoint, 0 = no limit (default: 0)
 --output        jsonl | csv | table | json  (default: jsonl)
@@ -72,7 +72,7 @@ python qz.py --api-key TOKEN --domain https://api.example.com --mode assets
 # Fetch a sample of 50 assets matching a ZQL filter, output as CSV
 python qz.py --api-key TOKEN --domain https://api.example.com \
   --mode assets \
-  --asset-query "is_internet_facing = true" \
+  --assets-zql "is_internet_facing = true" \
   --limit 50 \
   --output csv
 ```
@@ -106,7 +106,7 @@ python qz.py --api-key TOKEN --domain https://api.example.com \
 # Join assets and findings — one record per asset with a nested findings list
 python qz.py --api-key TOKEN --domain https://api.example.com \
   --mode join \
-  --asset-query "is_internet_facing = true" \
+  --assets-zql "is_internet_facing = true" \
   --store-path ./zafran.db
 ```
 

@@ -49,7 +49,7 @@ if __name__ == '__main__':
         help='SQL string to run against the local store (required for --mode query)',
     )
     parser.add_argument(
-        '--asset-query',
+        '--assets-zql',
         type=str,
         required=False,
         default='',
@@ -57,7 +57,7 @@ if __name__ == '__main__':
         help='ZQL query for assets (used in assets and join modes)',
     )
     parser.add_argument(
-        '--finding-query',
+        '--findings-zql',
         type=str,
         required=False,
         default='',
