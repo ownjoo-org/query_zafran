@@ -334,6 +334,16 @@ python -m pytest test/unit/ -v
 python -m pytest test/unit/test_store.py::TestExecuteSql -v
 ```
 
+## Dependencies
+
+| Package | PyPI | Purpose |
+|---|---|---|
+| `httpx` | [pypi.org/project/httpx](https://pypi.org/project/httpx/) | HTTP client with HTTP/2 support |
+| `oj-persistence` | [pypi.org/project/oj-persistence](https://pypi.org/project/oj-persistence/) | Multi-backend key-value store (SQLite used here) |
+| `oj-toolkit` | [pypi.org/project/oj-toolkit](https://pypi.org/project/oj-toolkit/) | Output formatting, logging utilities, `dig` helper |
+| `retry-async` | [pypi.org/project/retry-async](https://pypi.org/project/retry-async/) | Retry decorator with exponential backoff |
+| `funcy` | [pypi.org/project/funcy](https://pypi.org/project/funcy/) | Functional utilities (transitive dependency) |
+
 ## License
 
 MIT License — Copyright (c) 2025 ownjoo.org
