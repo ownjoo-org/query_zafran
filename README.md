@@ -333,3 +333,15 @@ python -m pytest test/unit/ -v
 # Run a specific test class
 python -m pytest test/unit/test_store.py::TestExecuteSql -v
 ```
+
+## License
+
+MIT License — Copyright (c) 2025 ownjoo.org
+
+This software is provided free of charge. You may use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies, provided the copyright notice and this permission notice are included in all copies or substantial portions of the software. See [LICENSE](LICENSE) for the full text.
+
+## Disclaimer
+
+This tool is provided **as is**, without warranty of any kind, express or implied. The authors and copyright holders accept no liability for any claim, damages, or other liability arising from its use.
+
+This is an independent utility and is not affiliated with, endorsed by, or officially supported by Zafran. Use of the Zafran API is subject to your organization's agreement with Zafran. You are solely responsible for ensuring your use of this tool complies with applicable terms of service, data handling policies, and regulations.
