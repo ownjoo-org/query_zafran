@@ -70,16 +70,24 @@ class CsvFormatter(Formatter):
         self._writer.writerow(flat)
 
 
+TABLE_STYLES = ('auto', 'ascii', 'rounded', 'double', 'single', 'none')
+
+
 class TableFormatter(Formatter):
     """Buffers all records and prints a formatted table on close(). Not for large result sets."""
 
-    def __init__(self):
+    def __init__(self, style: str = 'rounded'):
+        self._style = style
         self._table = None
 
     def write(self, record: dict) -> None:
         flat = _flatten(record)
         if self._table is None:
-            self._table = Table(headers=list(flat.keys()))
+            self._table = Table(
+                headers=list(flat.keys()),
+                columns=len(flat),
+                style=self._style,
+            )
         self._table.add_row(*flat.values())
 
     def close(self) -> None:

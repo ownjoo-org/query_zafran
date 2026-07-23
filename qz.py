@@ -9,7 +9,7 @@ from oj_toolkit.parsing.consts import TimeFormats
 
 from client import ZafranClient
 from consts import PAGE_SIZE
-from output import FORMATTERS, JsonFileFormatter
+from output import FORMATTERS, JsonFileFormatter, TABLE_STYLES, TableFormatter
 from store import Store, execute_sql
 
 
@@ -89,6 +89,15 @@ if __name__ == '__main__':
         help='Output format: jsonl (default, pipe-friendly), csv, table, json (requires --output-file)',
     )
     parser.add_argument(
+        '--table-style',
+        type=str,
+        required=False,
+        default='rounded',
+        dest='table_style',
+        choices=TABLE_STYLES,
+        help='Border style for --output table (default: rounded)',
+    )
+    parser.add_argument(
         '--output-file',
         type=str,
         required=False,
@@ -136,6 +145,8 @@ if __name__ == '__main__':
         if not args.output_file:
             parser.error('--output json requires --output-file')
         formatter = JsonFileFormatter(path=args.output_file)
+    elif args.output == 'table':
+        formatter = TableFormatter(style=args.table_style)
     else:
         formatter = FORMATTERS[args.output]()
 

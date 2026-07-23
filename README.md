@@ -168,6 +168,38 @@ python qz.py --mode query --store-path ./zafran.db \
  abc-123     web-server-01   Critical   CVE-2024-1234
 ```
 
+---
+
+```bash
+# Same join across all severities with rounded borders (--table-style rounded is the default)
+python qz.py --mode query --store-path ./zafran.db \
+  --sql "SELECT json_extract(a.value, '$.AssetID') AS asset_id,
+                json_extract(a.value, '$.name')    AS name,
+                json_extract(f.value, '$.title')   AS title,
+                json_extract(f.value, '$.severity') AS severity
+         FROM assets a
+         JOIN findings f ON json_extract(f.value, '$._asset_id') = a.key
+         ORDER BY severity" \
+  --output table \
+  --table-style rounded
+```
+
+```
+╭──────────┬───────────────┬───────────────┬──────────╮
+│ asset_id │ name          │ title         │ severity │
+├──────────┼───────────────┼───────────────┼──────────┤
+│ abc-123  │ web-server-01 │ CVE-2024-1234 │ Critical │
+│ abc-123  │ web-server-01 │ CVE-2024-5678 │ High     │
+│ ghi-789  │ db-primary-01 │ CVE-2023-9999 │ Low      │
+╰──────────┴───────────────┴───────────────┴──────────╯
+```
+
+```
+ asset_id    name            severity   title
+ ─────────────────────────────────────────────────────────
+ abc-123     web-server-01   Critical   CVE-2024-1234
+```
+
 ```bash
 # Same query as JSONL, piped to jq
 python qz.py --mode query --store-path ./zafran.db \
