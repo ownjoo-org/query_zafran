@@ -57,38 +57,130 @@ pip install -r requirements.txt
 ```bash
 # Fetch all assets, stream as JSONL
 python qz.py --api-key TOKEN --domain https://api.example.com --mode assets
+```
 
-# Fetch a sample of 50 assets matching a ZQL filter
+```json
+{"AssetID": "abc-123", "name": "web-server-01", "is_internet_facing": true, "type": "Server", "criticality": "High"}
+{"AssetID": "def-456", "name": "api-gateway-prod", "is_internet_facing": true, "type": "Gateway", "criticality": "Critical"}
+{"AssetID": "ghi-789", "name": "db-primary-01", "is_internet_facing": false, "type": "Database", "criticality": "Critical"}
+```
+
+---
+
+```bash
+# Fetch a sample of 50 assets matching a ZQL filter, output as CSV
 python qz.py --api-key TOKEN --domain https://api.example.com \
   --mode assets \
   --asset-query "is_internet_facing = true" \
-  --limit 50
+  --limit 50 \
+  --output csv
+```
 
+```
+AssetID,name,is_internet_facing,type,criticality
+abc-123,web-server-01,True,Server,High
+def-456,api-gateway-prod,True,Gateway,Critical
+```
+
+---
+
+```bash
 # Fetch findings and write to a valid JSON file
 python qz.py --api-key TOKEN --domain https://api.example.com \
   --mode findings \
   --output json --output-file findings.json
+```
 
-# Join assets and findings, stream through jq to filter assets that have findings
+```json
+[
+  {"Asset": {"AssetId": "abc-123"}, "severity": "Critical", "status": "Open", "title": "CVE-2024-1234"},
+  {"Asset": {"AssetId": "abc-123"}, "severity": "High", "status": "Open", "title": "CVE-2024-5678"},
+  {"Asset": {"AssetId": "ghi-789"}, "severity": "Low", "status": "Resolved", "title": "CVE-2023-9999"}
+]
+```
+
+---
+
+```bash
+# Join assets and findings — one record per asset with a nested findings list
 python qz.py --api-key TOKEN --domain https://api.example.com \
   --mode join \
   --asset-query "is_internet_facing = true" \
-  --store-path ./zafran.db \
-  | jq 'select(.findings | length > 0)'
+  --store-path ./zafran.db
+```
 
-# Query the local store with SQL — no API key needed
+```json
+{"AssetID": "abc-123", "name": "web-server-01", "is_internet_facing": true, "findings": [{"Asset": {"AssetId": "abc-123"}, "severity": "Critical", "title": "CVE-2024-1234"}, {"Asset": {"AssetId": "abc-123"}, "severity": "High", "title": "CVE-2024-5678"}]}
+{"AssetID": "def-456", "name": "api-gateway-prod", "is_internet_facing": true, "findings": []}
+```
+
+---
+
+```bash
+# Pipe join output to jq — extract asset ID and the asset IDs referenced by each finding
+python qz.py --api-key TOKEN --domain https://api.example.com \
+  --mode join \
+  --store-path ./zafran.db \
+  | jq '{asset_id: .AssetID, finding_asset_ids: [.findings[].Asset.AssetId]}'
+```
+
+```json
+{"asset_id": "abc-123", "finding_asset_ids": ["abc-123", "abc-123"]}
+{"asset_id": "def-456", "finding_asset_ids": []}
+{"asset_id": "ghi-789", "finding_asset_ids": ["ghi-789"]}
+```
+
+```bash
+# Filter to assets that have findings, then summarise severity counts
+python qz.py --api-key TOKEN --domain https://api.example.com \
+  --mode join \
+  --store-path ./zafran.db \
+  | jq 'select(.findings | length > 0)
+        | {asset_id: .AssetID,
+           name: .name,
+           finding_count: (.findings | length),
+           severities: [.findings[].severity]}'
+```
+
+```json
+{"asset_id": "abc-123", "name": "web-server-01", "finding_count": 2, "severities": ["Critical", "High"]}
+{"asset_id": "ghi-789", "name": "db-primary-01", "finding_count": 1, "severities": ["Low"]}
+```
+
+---
+
+```bash
+# Query the local store with SQL and format as a table — no API key needed
 python qz.py --mode query --store-path ./zafran.db \
-  --sql "SELECT a.key AS asset_id,
-                json_extract(a.value, '$.name') AS name,
-                json_extract(f.value, '$.severity') AS severity
+  --sql "SELECT json_extract(a.value, '$.AssetID') AS asset_id,
+                json_extract(a.value, '$.name')    AS name,
+                json_extract(f.value, '$.severity') AS severity,
+                json_extract(f.value, '$.title')    AS title
          FROM assets a
          JOIN findings f ON json_extract(f.value, '$._asset_id') = a.key
-         WHERE json_extract(f.value, '$.severity') = 'Critical'"
-
-# Output a query as a table
-python qz.py --mode query --store-path ./zafran.db \
-  --sql "SELECT key, value FROM assets LIMIT 20" \
+         WHERE json_extract(f.value, '$.severity') = 'Critical'" \
   --output table
+```
+
+```
+ asset_id    name            severity   title
+ ─────────────────────────────────────────────────────────
+ abc-123     web-server-01   Critical   CVE-2024-1234
+```
+
+```bash
+# Same query as JSONL, piped to jq
+python qz.py --mode query --store-path ./zafran.db \
+  --sql "SELECT json_extract(a.value, '$.AssetID') AS asset_id,
+                json_extract(a.value, '$.name')    AS name,
+                json_extract(f.value, '$.severity') AS severity
+         FROM assets a
+         JOIN findings f ON json_extract(f.value, '$._asset_id') = a.key" \
+  | jq 'select(.severity == "Critical")'
+```
+
+```json
+{"asset_id": "abc-123", "name": "web-server-01", "severity": "Critical"}
 ```
 
 ## Architecture
