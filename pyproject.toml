@@ -1,0 +1,55 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "template-cli"
+version = "0.1.0"
+description = "Template CLI application demonstrating async HTTP patterns with httpx and asyncio"
+authors = [{name = "ownjoo-org"}]
+requires-python = ">=3.10"
+dependencies = [
+    "funcy",
+    "httpx",
+    "httpx[http2]",
+    "retry-async",
+    "ownjoo-toolkit",
+]
+
+[project.optional-dependencies]
+dev = [
+    "coverage>=4.0",
+    "black>=23.0",
+    "ruff>=0.1.0",
+    "mypy>=1.0",
+]
+
+[project.scripts]
+template-cli = "template_cli.__main__:main"
+
+[tool.black]
+line-length = 100
+target-version = ['py310']
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+select = [
+    "E",    # Pycodestyle errors
+    "W",    # Pycodestyle warnings
+    "F",    # Pyflakes
+    "I",    # isort
+    "C",    # Flake8-comprehensions
+    "B",    # flake8-bugbear
+]
+ignore = [
+    "E501",  # Line too long
+    "B008",  # Do not perform function calls in argument defaults
+]
+
+[tool.mypy]
+python_version = "3.10"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
