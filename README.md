@@ -48,6 +48,7 @@ pip install -r requirements.txt
 --limit         Max records to fetch per endpoint, 0 = no limit (default: 0)
 --output        jsonl | csv | table | json  (default: jsonl)
 --output-file   File path, required when --output json
+--table-style   rounded | double | single | ascii | none  (default: rounded, only applies to --output table)
 --store-path    Path to the SQLite store (default: system temp dir)
 --log-level     0 (NOTSET) – 50 (CRITICAL)  (default: 20 / INFO)
 ```
@@ -213,6 +214,58 @@ python qz.py --mode query --store-path ./zafran.db \
 
 ```json
 {"asset_id": "abc-123", "name": "web-server-01", "severity": "Critical"}
+```
+
+### Table Styles (`--table-style`)
+
+All styles use the same `--output table` flag. Pass `--table-style <name>` to choose.
+
+**`rounded`** (default)
+```
+╭──────────┬───────────────┬──────────╮
+│ asset_id │ name          │ severity │
+├──────────┼───────────────┼──────────┤
+│ abc-123  │ web-server-01 │ Critical │
+│ def-456  │ api-gateway   │ High     │
+╰──────────┴───────────────┴──────────╯
+```
+
+**`double`**
+```
+╔══════════╦═══════════════╦══════════╗
+║ asset_id ║ name          ║ severity ║
+╠══════════╬═══════════════╬══════════╣
+║ abc-123  ║ web-server-01 ║ Critical ║
+║ def-456  ║ api-gateway   ║ High     ║
+╚══════════╩═══════════════╩══════════╝
+```
+
+**`single`**
+```
+┌──────────┬───────────────┬──────────┐
+│ asset_id │ name          │ severity │
+├──────────┼───────────────┼──────────┤
+│ abc-123  │ web-server-01 │ Critical │
+│ def-456  │ api-gateway   │ High     │
+└──────────┴───────────────┴──────────┘
+```
+
+**`ascii`** (safest for terminals without Unicode support)
+```
++----------+---------------+----------+
+| asset_id | name          | severity |
++----------+---------------+----------+
+| abc-123  | web-server-01 | Critical |
+| def-456  | api-gateway   | High     |
++----------+---------------+----------+
+```
+
+**`none`** (whitespace only, no borders)
+```
+  asset_id   name            severity
+
+  abc-123    web-server-01   Critical
+  def-456    api-gateway     High
 ```
 
 ## Architecture
