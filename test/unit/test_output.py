@@ -23,8 +23,9 @@ class TestSerialize(unittest.TestCase):
     def test_scalar_string_unchanged(self):
         self.assertEqual(_serialize('hello'), 'hello')
 
-    def test_bool_unchanged(self):
-        self.assertEqual(_serialize(True), True)
+    def test_bool_becomes_lowercase_string(self):
+        self.assertEqual(_serialize(True), 'true')
+        self.assertEqual(_serialize(False), 'false')
 
     def test_none_unchanged(self):
         self.assertIsNone(_serialize(None))
@@ -42,7 +43,7 @@ class TestSerialize(unittest.TestCase):
 
 class TestFlatten(unittest.TestCase):
     def test_flat_record_unchanged(self):
-        record = {'a': 1, 'b': 'hello', 'c': True}
+        record = {'a': 1, 'b': 'hello'}
         self.assertEqual(_flatten(record), record)
 
     def test_nested_dict_serialized(self):

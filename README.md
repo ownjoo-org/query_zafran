@@ -78,8 +78,8 @@ python qz.py --api-key TOKEN --domain https://api.example.com \
 
 ```
 AssetID,name,is_internet_facing,type,criticality
-abc-123,web-server-01,True,Server,High
-def-456,api-gateway-prod,True,Gateway,Critical
+abc-123,web-server-01,true,Server,High
+def-456,api-gateway-prod,true,Gateway,Critical
 ```
 
 ---

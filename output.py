@@ -6,8 +6,10 @@ from abc import ABC, abstractmethod
 from oj_toolkit.console import Table
 
 
-def _serialize(v) -> str | int | float | bool | None:
-    """Nested dicts/lists become JSON strings so flat formats can hold them."""
+def _serialize(v) -> str | int | float | None:
+    """Serialize values to JSON-compatible scalars for flat formats."""
+    if isinstance(v, bool):
+        return 'true' if v else 'false'
     if isinstance(v, (dict, list)):
         return json.dumps(v)
     return v
