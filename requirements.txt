@@ -1,5 +1,6 @@
 funcy
 httpx
 httpx[http2]
-ownjoo-toolkit
+oj-persistence
+oj-toolkit
 retry-async
